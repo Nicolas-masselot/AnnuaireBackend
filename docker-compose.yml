@@ -1,0 +1,63 @@
+﻿services:
+  backend:
+      build: ./backend
+      ports:
+        - "5001:5001"
+      networks:
+        - annuaire_network
+
+  administration:
+      build: ./administration
+      ports:
+        - "7001:7001"
+      networks:
+        - admin_network
+        - annuaire_network
+        - auth_network
+
+  authentification:
+      build: ./authentification
+      ports:
+        - "6001:6001"
+      networks:
+        - auth_network
+
+  db_annuaire:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: annuaire
+      POSTGRES_DB: annuaire
+      POSTGRES_USER: annuaire_user
+    ports:
+      - "5432:5432"
+    volumes:
+      - annuaire_data:/var/lib/postgresql/data
+      - ./db_scripts/Personnes.sql:/docker-entrypoint-initdb.d/Personnes.sql
+    networks:
+      - admin_network
+      - annuaire_network
+
+  db_auth:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+      - ./db_scripts/Users.sql:/docker-entrypoint-initdb.d/Users.sql
+    networks:
+        - auth_network
+
+volumes:
+    annuaire_data:
+    auth_data:
+
+networks:
+    admin_network:
+    annuaire_network:
+    auth_network:
