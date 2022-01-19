@@ -49,7 +49,7 @@
       - "5433:5432"
     volumes:
       - auth_data:/var/lib/postgresql/data
-      - ./db_scripts/Users.sql:/docker-entrypoint-initdb.d/Users.sql
+      - ./db_scripts/UsersHashed.sql:/docker-entrypoint-initdb.d/UsersHashed.sql
     networks:
         - auth_network
 
