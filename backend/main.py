@@ -1,11 +1,14 @@
 ﻿from flask import Flask , request, jsonify
+from flask_cors import CORS
 from db_connect import get_connection , psycopg2
 
 SUCCESSFUL_DB_CONNECT = "Connection to the PostgreSQL established successfully."
 ERROR_DB_CONNECT = "Connection to the PostgreSQL encountered and error."
-app = Flask(__name__)
 
-@app.route('/getAllPersonnes', methods = ['POST'])
+app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@app.route('/api/backend/getAllPersonnes', methods = ['POST'])
 def getAllPersonnes():
     
     success = True
@@ -37,7 +40,7 @@ def getAllPersonnes():
     }   
     return jsonify(result)
   
-@app.route('/getPersonnebyMail', methods = ['POST'])
+@app.route('/api/backend/getPersonnebyMail', methods = ['POST'])
 def getPersonneByMail():
     success = True
     error_set = []
@@ -76,7 +79,7 @@ def getPersonneByMail():
     }  
     return jsonify(result)
 
-@app.route('/getPersonnebyPhone', methods = ['POST'])
+@app.route('/api/backend/getPersonnebyPhone', methods = ['POST'])
 def getPersonneByPhone():
     phonerecherche = request.form.get("tel")
     success = True
@@ -114,7 +117,7 @@ def getPersonneByPhone():
     }
     return jsonify(result)
   
-@app.route('/getPersonnebyNoms', methods = ['POST'])
+@app.route('/api/backend/getPersonnebyNoms', methods = ['POST'])
 def getPersonneByNoms():
 
     success = True
