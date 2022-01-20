@@ -1,4 +1,6 @@
 ﻿from flask import Flask, jsonify, request
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from auth_db_connect import get_auth_connection, psycopg2
 from annuaire_db_connect import get_annuaire_connection, psycopg2
 app = Flask(__name__)
@@ -55,7 +57,7 @@ def getUserById():
         test_db = SUCCESSFUL_DB_CONNECT
     else:
         test_db = ERROR_DB_CONNECT
-
+    print(test_db)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     _id = request.form['_id']
@@ -85,9 +87,69 @@ def createUsers():
         test_db = SUCCESSFUL_DB_CONNECT
     else:
         test_db = ERROR_DB_CONNECT
+    print(test_db)
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    if request.method == 'POST' and 'email' in request.form and 'password' in request.form and 'role' in request.form:
+        email = request.form['email']
+        password = request.form['password']
+        role = request.form['role']
+
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
+
+        # Check if account exists
+        sql = "PREPARE checkExistUser (text) AS SELECT * FROM Users WHERE loginUser = $1 ; EXECUTE checkExistUser(%s);"
+        cursor.execute(sql, (email,))
+
+        # Fetch one record and return result
+        account = cursor.fetchone()
+
+        if account:
+            success = False
+            error_set.append('USER_EXIST')
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            success = False
+            error_set.append('INVALID_EMAIL')
+        elif not email or not password or not role:
+            success = False
+            error_set.append('INVALID_PARAMETERS')
+        else:
+            # Account does not exists and the form data is valid -> insert new account into Users table
+            cursor.execute(
+                "INSERT INTO USERS (loginUser, passwordUser, roleUser) VALUES (%s,%s,%s)", (email, hashed_password, role))
+            conn.commit()
+
+            if (cursor.rowcount):
+                success = True
+
+                # Return created user
+                cursor.execute(
+                    'SELECT * FROM Users WHERE loginUser = %s', (email))
+
+                # Fetch one record and return result
+                account = cursor.fetchone()
+
+                data.append(account)
+            else:
+                success = False
+                error_set.append('ERROR_SYSTEM')
+
+    elif request.method == 'POST':
+        # Form is empty
+        success = False
+        error_set.append('INVALID_PARAMETERS')
+
+    result = {
+        "status": 200,
+        "success": success,
+        "errorSet": error_set,
+        "data": data
+    }
 
     conn.close()
-    return jsonify(results)
+    return jsonify(result)
 
 
 @app.route('/users/modify', methods=['PUT'])
