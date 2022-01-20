@@ -155,6 +155,17 @@ def createUsers():
 @app.route('/users/modify', methods=['PUT'])
 def modifyUsers():
     conn = get_auth_connection()
+    success = True
+    error_set = []
+    data = []
+
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+    print(test_db)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     conn.close()
     return jsonify(results)
 
@@ -162,13 +173,60 @@ def modifyUsers():
 @app.route('/users/delete', methods=['DELETE'])
 def deleteUsers():
     conn = get_auth_connection()
+    success = True
+    error_set = []
+    data = []
+
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+    print(test_db)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    if request.method == 'DELETE' and 'id' in request.form:
+        id = request.form['id']
+
+        cursor.execute('DELETE FROM Users WHERE id= %s', (id,))
+
+        # Fetch one record and return result
+        account = cursor.fetchone()
+
+        if (not account):
+            success = False
+            error_set.append('USER_EXIST')
+        else:
+            data.append(account)
+    else:
+        # Form is empty
+        success = False
+        error_set.append('INVALID_PARAMETERS')
+
+    result = {
+        "status": 200,
+        "success": success,
+        "errorSet": error_set,
+        "data": data
+    }
     conn.close()
-    return jsonify(results)
+    return jsonify(result)
 
 
 @app.route('/users/upgrade')
 def upgradeUsers():
+
     conn = get_auth_connection()
+    success = True
+    error_set = []
+    data = []
+
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+    print(test_db)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     conn.close()
     return jsonify(results)
 
@@ -176,6 +234,13 @@ def upgradeUsers():
 @app.route('/users/downgrade')
 def downgradeUsers():
     conn = get_auth_connection()
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+    print(test_db)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     conn.close()
     return jsonify(results)
 
