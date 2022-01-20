@@ -278,16 +278,28 @@ def upgradeUsers():
     print(test_db)
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    if request.method == 'PUT' and 'id_Users' in request.form:
-
+    if request.method == 'PUT' and 'id_Users' in request.form and 'current_Role' in request.form:
+        current_Role = request.form['current_Role']
         id_Users = request.form['id_Users']
 
-        cursor.execute(
-            'UPDATE users SET role =  %s WHERE id_Users = %s', ('admin', id_Users))
-        # Fetch one record and return result
-        account = cursor.fetchone()
+        if current_Role == 'user':
+            cursor.execute(
+                'UPDATE users SET role =  %s WHERE id_Users = %s', ('admin', id_Users))
+            # Fetch one record and return result
+            account = cursor.fetchone()
 
-        data.append(account)
+            data.append(account)
+        elif current_Role == 'admin':
+            cursor.execute(
+                'UPDATE users SET role =  %s WHERE id_Users = %s', ('super_admin', id_Users))
+            # Fetch one record and return result
+            account = cursor.fetchone()
+
+            data.append(account)
+        else:
+            # Form is empty
+            success = False
+            error_set.append('INVALID_PARAMETERS')
 
     elif request.method == 'PUT':
         # Form is empty
@@ -320,16 +332,28 @@ def downgradeUsers():
     print(test_db)
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    if request.method == 'PUT' and 'id_Users' in request.form:
-
+    if request.method == 'PUT' and 'id_Users' in request.form and 'current_Role' in request.form:
+        current_Role = request.form['current_Role']
         id_Users = request.form['id_Users']
+        if current_Role == 'admin':
+            cursor.execute(
+                'UPDATE users SET role =  %s WHERE id_Users = %s', ('user', id_Users))
+            # Fetch one record and return result
+            account = cursor.fetchone()
 
-        cursor.execute(
-            'UPDATE users SET role =  %s WHERE id_Users = %s', ('user', id_Users))
-        # Fetch one record and return result
-        account = cursor.fetchone()
+            data.append(account)
 
-        data.append(account)
+        if current_Role == 'super_admin':
+            cursor.execute(
+                'UPDATE users SET role =  %s WHERE id_Users = %s', ('admin', id_Users))
+            # Fetch one record and return result
+            account = cursor.fetchone()
+
+            data.append(account)
+        else:
+            # Form is empty
+            success = False
+            error_set.append('INVALID_PARAMETERS')
 
     elif request.method == 'PUT':
         # Form is empty
