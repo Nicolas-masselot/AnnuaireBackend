@@ -21,7 +21,7 @@
         - "6001:6001"
       networks:
         - auth_network
-
+  
   db_annuaire:
     image: postgres:latest
     restart: always
@@ -37,7 +37,7 @@
     networks:
       - admin_network
       - annuaire_network
-
+  
   db_auth:
     image: postgres:latest
     restart: always
@@ -51,13 +51,13 @@
       - auth_data:/var/lib/postgresql/data
       - ./db_scripts/UsersHashed.sql:/docker-entrypoint-initdb.d/UsersHashed.sql
     networks:
-        - auth_network
+      - auth_network
 
 volumes:
-    annuaire_data:
-    auth_data:
+  annuaire_data:
+  auth_data:
 
 networks:
-    admin_network:
-    annuaire_network:
-    auth_network:
+  admin_network:
+  annuaire_network:
+  auth_network:
