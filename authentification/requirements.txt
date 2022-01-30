@@ -1,0 +1,4 @@
+﻿flask
+psycopg2
+Flask-Bcrypt
+flask-cors
