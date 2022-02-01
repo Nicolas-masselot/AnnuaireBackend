@@ -3,7 +3,11 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from auth_db_connect import get_auth_connection, psycopg2
 from annuaire_db_connect import get_annuaire_connection, psycopg2
+
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+bcrypt = Bcrypt()
+bcrypt.init_app(app)
 
 """
 Ce service doit permettre aux utilisateurs admin de :
@@ -14,7 +18,7 @@ SUCCESSFUL_DB_CONNECT = "Connection to the PostgreSQL established successfully."
 ERROR_DB_CONNECT = "Connection to the PostgreSQL encountered and error."
 
 
-@app.route('/')
+@app.route('/',methods=['POST'])
 def hello():
     conn = get_annuaire_connection()
     if conn:
@@ -30,7 +34,7 @@ def hello():
     return jsonify(results)
 
 
-@app.route('/api/v1/users')
+@app.route('/api/v1/users',methods=['POST'])
 def getUsers():
     conn = get_auth_connection()
     if conn:
@@ -46,7 +50,7 @@ def getUsers():
     return jsonify(results)
 
 
-@app.route('/api/v1/users/getById')
+@app.route('/api/v1/users/getById',methods=['POST'])
 def getUserById():
     conn = get_auth_connection()
     success = True
