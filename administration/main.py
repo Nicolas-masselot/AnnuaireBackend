@@ -1,5 +1,5 @@
 ﻿from flask import Flask, jsonify, request
-from flask_Bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from auth_db_connect import get_auth_connection, psycopg2
 from annuaire_db_connect import get_annuaire_connection, psycopg2
