@@ -1,4 +1,4 @@
 ﻿flask
 psycopg2
-Flask-Bcrypt
+flask-bcrypt
 flask-cors
