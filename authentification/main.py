@@ -143,3 +143,6 @@ def register():
     conn.close()
 
     return jsonify(result)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=6001, debug=True)
