@@ -3,7 +3,11 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from auth_db_connect import get_auth_connection, psycopg2
 from annuaire_db_connect import get_annuaire_connection, psycopg2
+
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+bcrypt = Bcrypt()
+bcrypt.init_app(app)
 
 """
 Ce service doit permettre aux utilisateurs admin de :
