@@ -30,7 +30,7 @@ def hello():
     return jsonify(results)
 
 
-@app.route('/users')
+@app.route('/api/v1/users')
 def getUsers():
     conn = get_auth_connection()
     if conn:
@@ -46,7 +46,7 @@ def getUsers():
     return jsonify(results)
 
 
-@app.route('/users/getById')
+@app.route('/api/v1/users/getById')
 def getUserById():
     conn = get_auth_connection()
     success = True
@@ -76,7 +76,7 @@ def getUserById():
     return jsonify(result)
 
 
-@app.route('/users/create', methods=['POST'])
+@app.route('/api/v1/users/create', methods=['POST'])
 def createUsers():
     conn = get_auth_connection()
     success = True
@@ -152,7 +152,7 @@ def createUsers():
     return jsonify(result)
 
 
-# @app.route('/users/modify', methods=['PUT'])
+# @app.route('/api/v1/users/modify', methods=['PUT'])
 # def modifyUsers():
 #     conn = get_auth_connection()
 #     success = True
@@ -171,7 +171,7 @@ def createUsers():
 #     conn.close()
 #     return jsonify(result)
 
-@app.route('/users/modifyPassword', methods=['PUT'])
+@app.route('/api/v1/users/modifyPassword', methods=['PUT'])
 def modifyUsers():
     conn = get_auth_connection()
     success = True
@@ -221,7 +221,7 @@ def modifyUsers():
     return jsonify(result)
 
 
-@app.route('/users/delete', methods=['DELETE'])
+@app.route('/api/v1/users/delete', methods=['DELETE'])
 def deleteUsers():
     conn = get_auth_connection()
     success = True
@@ -263,7 +263,7 @@ def deleteUsers():
     return jsonify(result)
 
 
-@app.route('/users/upgrade', methods=['PUT'])
+@app.route('/api/v1/users/upgrade', methods=['PUT'])
 def upgradeUsers():
 
     conn = get_auth_connection()
@@ -317,7 +317,7 @@ def upgradeUsers():
     return jsonify(result)
 
 
-@app.route('/users/downgrade')
+@app.route('/api/v1/users/downgrade')
 def downgradeUsers():
 
     conn = get_auth_connection()

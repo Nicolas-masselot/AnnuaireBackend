@@ -8,7 +8,7 @@ ERROR_DB_CONNECT = "Connection to the PostgreSQL encountered and error."
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-@app.route('/api/backend/getAllPersonnes', methods = ['POST'])
+@app.route('/api/v1/personnes/getAllPersonnes', methods = ['POST'])
 def getAllPersonnes():
     
     success = True
@@ -40,7 +40,7 @@ def getAllPersonnes():
     }   
     return jsonify(result)
   
-@app.route('/api/backend/getPersonnebyMail', methods = ['POST'])
+@app.route('/api/v1/personnes/getPersonneByMail', methods = ['POST'])
 def getPersonneByMail():
     success = True
     error_set = []
@@ -79,7 +79,7 @@ def getPersonneByMail():
     }  
     return jsonify(result)
 
-@app.route('/api/backend/getPersonnebyPhone', methods = ['POST'])
+@app.route('/api/v1/personnes/getPersonneByPhone', methods = ['POST'])
 def getPersonneByPhone():
     phonerecherche = request.form.get("tel")
     success = True
@@ -117,7 +117,7 @@ def getPersonneByPhone():
     }
     return jsonify(result)
   
-@app.route('/api/backend/getPersonnebyNoms', methods = ['POST'])
+@app.route('/api/v1/personnes/getPersonneByNoms', methods = ['POST'])
 def getPersonneByNoms():
 
     success = True
