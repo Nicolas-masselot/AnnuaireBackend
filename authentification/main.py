@@ -14,6 +14,8 @@ ERROR_DB_CONNECT = "Connection to the PostgreSQL encountered and error."
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
+    login = request.form.get("login")
+    password = request.form.get("password")
     conn = get_connection()
 
     success = True
@@ -28,7 +30,7 @@ def login():
     cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
    
     # Check if "login" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'login' in request.form and 'password' in request.form:
+    if request.method == 'POST' and login != None and password != None:
         login = request.form['login']
         password = request.form['password']
  
