@@ -14,6 +14,10 @@ ERROR_DB_CONNECT = "Connection to the PostgreSQL encountered and error."
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
+    req = request.get_json()
+
+    login = req.get("login")
+    password = req.get("password")
     conn = get_connection()
 
     success = True
@@ -28,9 +32,7 @@ def login():
     cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
    
     # Check if "login" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'login' in request.form and 'password' in request.form:
-        login = request.form['login']
-        password = request.form['password']
+    if request.method == 'POST' and login != None and password != None:
  
         # Check if account exists 
         sql = "PREPARE checkExistUser (text) AS SELECT * FROM Users WHERE loginUser = $1 ; EXECUTE checkExistUser(%s);"
@@ -72,6 +74,11 @@ def login():
 @app.route('/api/v1/users/register', methods=['POST'])
 def register():
     conn = get_connection()
+    req = request.get_json()
+
+    login = req.get("login")
+    password = req.get("password")
+    role = req.get("role")
 
     success = True
     error_set = []
@@ -85,10 +92,7 @@ def register():
     cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
  
     # Check if "login", "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'login' in request.form and 'password' in request.form and 'role' in request.form:
-        login = request.form['login']
-        password = request.form['password']
-        role = request.form['role']
+    if login != None and password != None and role != None :
     
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
  
