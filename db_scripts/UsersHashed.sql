@@ -5,7 +5,7 @@ create table Users (
 	roleUser VARCHAR(50),
 	id_Personnes SERIAL
 );
-insert into Users (id_Users, loginUser, passwordUser, roleUser, id_Personnes) values (DEFAULT, 'aromaynes0@wordpress.com', '$2b$12$1/PC7GQ7a3anaTDTCKhZbubOdac3UZVHLMlYOh6ngUXh/SiD95h4K', 'admin', DEFAULT);
+insert into Users (id_Users, loginUser, passwordUser, roleUser, id_Personnes) values (DEFAULT, 'aromaynes0@wordpress.com', '$2b$12$1/PC7GQ7a3anaTDTCKhZbubOdac3UZVHLMlYOh6ngUXh/SiD95h4K', 'super_admin', DEFAULT);
 insert into Users (id_Users, loginUser, passwordUser, roleUser, id_Personnes) values (DEFAULT, 'rsparkwell1@eepurl.com', '$2b$12$YGs9tgsxeF8aJS4zYxC0Wu1pbQCRL6o6.c8/nQL4zwT5T34pmwMHW', 'user', DEFAULT);
 insert into Users (id_Users, loginUser, passwordUser, roleUser, id_Personnes) values (DEFAULT, 'ababon2@bravesites.com', '$2b$12$1/PC7GQ7a3anaTDTCKhZbubOdac3UZVHLMlYOh6ngUXh/SiD95h4K', 'admin', DEFAULT);
 insert into Users (id_Users, loginUser, passwordUser, roleUser, id_Personnes) values (DEFAULT, 'cshasnan3@nyu.edu', '$2b$12$1/PC7GQ7a3anaTDTCKhZbubOdac3UZVHLMlYOh6ngUXh/SiD95h4K', 'admin', DEFAULT);
