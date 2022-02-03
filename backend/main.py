@@ -1,4 +1,5 @@
-﻿from flask import Flask , request, jsonify
+﻿import re
+from flask import Flask , request, jsonify
 from flask_cors import CORS
 from db_connect import get_connection , psycopg2
 
@@ -45,8 +46,10 @@ def getPersonneByMail():
     success = True
     error_set = []
     data = []
-    
-    mailrecherche = request.form.get("email")
+
+    req = request.get_json()
+
+    mailrecherche = req.get("email")
     if(mailrecherche != None):
         mailrecherche = '%'+mailrecherche+'%'
     else:
@@ -81,7 +84,9 @@ def getPersonneByMail():
 
 @app.route('/api/v1/personnes/getPersonneByPhone', methods = ['POST'])
 def getPersonneByPhone():
-    phonerecherche = request.form.get("tel")
+    req = request.get_json()
+
+    phonerecherche = req.get("tel")
     success = True
     error_set = []
     data = []
@@ -123,8 +128,11 @@ def getPersonneByNoms():
     success = True
     error_set = []
     data = []
-    nomrecherche = request.form.get("nom")
-    prenomrecherche = request.form.get("prenom")
+
+    req = request.get_json()
+
+    nomrecherche = req.get("nom")
+    prenomrecherche = req.get("prenom")
 
     conn = get_connection()
 
@@ -167,6 +175,139 @@ def getPersonneByNoms():
         "data": data
     }
     return jsonify(result)
+
+@app.route('/api/v1/personnes/getPersonneByID', methods = ['POST'])
+def getPersonneByID():
+    success = True
+    error_set = []
+    data = []
+    req = request.get_json()
+    
+    IDrecherche = req.get("idPers")
+    if(IDrecherche == None):
+        success = False
+        error_set.append('INVALID PARAMETERS')
+    
+
+    conn = get_connection()
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+        success = False
+        error_set.append(test_db)
+
+    print(test_db)
+
+    if(success):
+        cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+        sql = "PREPARE getPersID (int) AS SELECT * FROM Personnes WHERE id_Personnes = $1 ; EXECUTE getPersID(%s);"
+        cursor.execute(sql,(IDrecherche,))
+        data = cursor.fetchall()
+        conn.close()
+
+    result = {
+        "status": 200,
+        "success": success,
+        "errorSet": error_set,
+        "data": data
+    }  
+    return jsonify(result)
+
+
+@app.route('/api/v1/personnes/ModifyPersonne', methods = ['POST'])
+def ModifyPersonne():
+    success = True
+    error_set = []
+    data = []
+    req = request.get_json()
+    
+    IDpers = req.get("idPers")
+    Adresse = req.get("adresse")
+    Code_postal = req.get("codepostal")
+    Mail = req.get("email")
+    Nom = req.get("nom")
+    Prenom = req.get("prenom")
+    Tel= req.get("tel")
+    Ville =  req.get("ville") 
+
+    if(IDpers == None or Adresse == None or Code_postal == None or Mail == None or Nom == None or Prenom == None or Tel == None or Ville == None ):
+        success = False
+        error_set.append('INVALID PARAMETERS')
+    
+
+    conn = get_connection()
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+        success = False
+        error_set.append(test_db)
+
+    print(test_db)
+
+    if(success):
+        cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+        sql = "PREPARE EditPers (int ,text,text,text,text,text,text,text) AS UPDATE Personnes SET nom = $2,prenom = $3 , tel = $4 , adresse = $5 , code_postal = $6 , ville = $7 , email = $8 WHERE id_Personnes = $1 ; EXECUTE EditPers(%s ,%s,%s,%s,%s,%s,%s,%s);"
+        cursor.execute(sql,(IDpers , Nom , Prenom ,Tel , Adresse , Code_postal , Ville , Mail ))
+        conn.commit()
+        conn.close()
+
+    result = {
+        "status": 200,
+        "success": success,
+        "errorSet": error_set,
+        "data": data
+    }  
+    return jsonify(result)
+
+
+@app.route('/api/v1/personnes/AddPersonne', methods = ['POST'])
+def AddPersonne():
+    success = True
+    error_set = []
+    data = []
+    req = request.get_json()
+    
+    IDpers = req.get("idPers")
+    Adresse = req.get("adresse")
+    Code_postal = req.get("codepostal")
+    Mail = req.get("email")
+    Nom = req.get("nom")
+    Prenom = req.get("prenom")
+    Tel= req.get("tel")
+    Ville =  req.get("ville") 
+
+    if(IDpers == None or Adresse == None or Code_postal == None or Mail == None or Nom == None or Prenom == None or Tel == None or Ville == None ):
+        success = False
+        error_set.append('INVALID PARAMETERS')
+    
+
+    conn = get_connection()
+    if conn:
+        test_db = SUCCESSFUL_DB_CONNECT
+    else:
+        test_db = ERROR_DB_CONNECT
+        success = False
+        error_set.append(test_db)
+
+    print(test_db)
+
+    if(success):
+        cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+        sql = "PREPARE EditPers (int ,text,text,text,text,text,text,text) AS INSERT INTO Personnes Values($1, $2, $3 , $4 , $5 ,  $6 , $7 , $8) ; EXECUTE EditPers(%s ,%s,%s,%s,%s,%s,%s,%s);"
+        cursor.execute(sql,(IDpers , Nom , Prenom ,Tel , Adresse , Code_postal , Ville , Mail ))
+        conn.commit()
+        conn.close()
+
+    result = {
+        "status": 200,
+        "success": success,
+        "errorSet": error_set,
+        "data": data
+    }  
+    return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(host ='0.0.0.0', port = 5001, debug = True) 
